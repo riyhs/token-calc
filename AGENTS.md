@@ -17,11 +17,13 @@ app.js      →  all logic: state, rendering, event wiring
 **Data flow:**
 1. User edits pricing table rows or usage assumption inputs.
 2. Every `input` event triggers `recalc()`.
-3. `recalc()` calls `syncFromDom()` to read every price input into the `rows[]` state array.
+3. `recalc()` calls `syncFromDom()` to read every price input into the `rows[]` state array, then `saveState()` to persist.
 4. `recalc()` computes `costPerRequest = (inTok·P_in + outTok·P_out + crTok·P_cr + cwTok·P_cw) / 1_000_000`, then `requests = budget / cost`, `tokens = requests · perReqTokens`.
-5. Results are sorted by cost ascending and rendered into the comparison table + summary strip.
+5. Results are sorted by cost ascending and rendered into the comparison table.
 
 **State is the single source of truth** — `rows[]` is written by `syncFromDom()` on every recalculation, and add/remove mutate `rows[]` directly then re-render the pricing table.
+
+**Persistence** — provider rows, usage inputs, and budget are saved to `sessionStorage` under `token-calc-state` on every change (`saveState()` inside `recalc()`). Survives page refresh within the same tab; cleared when the tab closes. Restored in init via `restoreState()`; falls back to `DEFAULT_ROWS` when storage is empty/unavailable.
 
 ## Key Directories
 

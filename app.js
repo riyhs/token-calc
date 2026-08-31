@@ -144,6 +144,7 @@ function syncFromDom() {
 
 function recalc() {
   syncFromDom();
+  saveState();
 
   var inN  = Math.max(0, parseInt(inTok.value, 10) || 0);
   var outN   = Math.max(0, parseInt(outTok.value, 10) || 0);
@@ -409,17 +410,75 @@ csvText.addEventListener("keydown", function (e) {
   }
 });
 
-/* Usage assumption inputs + budget */
-var liveInputs = [inTok, outTok, crTok, cwTok, budget];
-for (var i = 0; i < liveInputs.length; i++) {
-  liveInputs[i].addEventListener("input", recalc);
+/* ── persistence (sessionStorage) ──────────────────────────────────── */
+/* Saves provider rows + usage inputs + budget on every change.
+   Survives page refresh; cleared when the tab closes. */
+
+var STORAGE_KEY = "token-calc-state";
+
+function saveState() {
+  try {
+    var data = {
+      rows: rows.map(function (r) {
+        return { name: r.name, input: r.input, output: r.output, cacheRead: r.cacheRead, cacheWrite: r.cacheWrite };
+      }),
+      usage: {
+        inTok: inTok.value,
+        outTok: outTok.value,
+        crTok: crTok.value,
+        cwTok: cwTok.value,
+        budget: budget.value
+      }
+    };
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  } catch (e) {
+    /* storage unavailable (private mode / quota) — non-fatal */
+  }
+}
+
+function restoreState() {
+  try {
+    var raw = sessionStorage.getItem(STORAGE_KEY);
+    if (!raw) return false;
+    var data = JSON.parse(raw);
+    if (!data || !Array.isArray(data.rows)) return false;
+
+    /* restore usage inputs */
+    if (data.usage) {
+      if (data.usage.inTok != null) inTok.value = data.usage.inTok;
+      if (data.usage.outTok != null) outTok.value = data.usage.outTok;
+      if (data.usage.crTok != null) crTok.value = data.usage.crTok;
+      if (data.usage.cwTok != null) cwTok.value = data.usage.cwTok;
+      if (data.usage.budget != null) budget.value = data.usage.budget;
+    }
+
+    /* restore rows with fresh ids */
+    rows = [];
+    for (var i = 0; i < data.rows.length; i++) {
+      var r = data.rows[i];
+      if (!r || typeof r.name !== "string") continue;
+      rows.push({
+        id: freshId(),
+        name: r.name,
+        input: parsePrice(r.input),
+        output: parsePrice(r.output),
+        cacheRead: parsePrice(r.cacheRead),
+        cacheWrite: parsePrice(r.cacheWrite)
+      });
+    }
+    return true;
+  } catch (e) {
+    return false;
+  }
 }
 
 /* ── init ──────────────────────────────────────────────────────────── */
 
 rows = [];
-for (var i = 0; i < DEFAULT_ROWS.length; i++) {
-  rows.push({ id: freshId(), name: DEFAULT_ROWS[i].name, input: DEFAULT_ROWS[i].input, output: DEFAULT_ROWS[i].output, cacheRead: DEFAULT_ROWS[i].cacheRead, cacheWrite: DEFAULT_ROWS[i].cacheWrite });
+if (!restoreState()) {
+  for (var i = 0; i < DEFAULT_ROWS.length; i++) {
+    rows.push({ id: freshId(), name: DEFAULT_ROWS[i].name, input: DEFAULT_ROWS[i].input, output: DEFAULT_ROWS[i].output, cacheRead: DEFAULT_ROWS[i].cacheRead, cacheWrite: DEFAULT_ROWS[i].cacheWrite });
+  }
 }
 renderPriceRows();
 recalc();
