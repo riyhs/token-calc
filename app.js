@@ -109,7 +109,7 @@ function renderPriceRows() {
     html += '<td class="col-num" data-label="Output /M"><div class="px"><span class="dollar">$</span><input type="number" data-field="output" min="0" step="any" value="' + r.output + '" /></div></td>';
     html += '<td class="col-num" data-label="Cache read /M"><div class="px"><span class="dollar">$</span><input type="number" data-field="cacheRead" min="0" step="any" value="' + r.cacheRead + '" /></div></td>';
     html += '<td class="col-num" data-label="Cache write /M"><div class="px"><span class="dollar">$</span><input type="number" data-field="cacheWrite" min="0" step="any" value="' + r.cacheWrite + '" /></div></td>';
-    html += '<td class="col-actions"><button type="button" class="remove-btn" data-action="remove-row" data-id="' + r.id + '" title="Remove provider" aria-label="Remove ' + esc(r.name || "provider") + '">✕</button></td>';
+    html += '<td class="col-actions"><button type="button" class="remove-btn" data-action="remove-row" data-id="' + r.id + '" title="Remove provider" aria-label="Remove ' + esc(r.name || "provider") + '"><span class="remove-icon">✕</span><span class="remove-label">Remove provider</span></button></td>';
     html += '</tr>';
   }
   priceBody.innerHTML = html;
