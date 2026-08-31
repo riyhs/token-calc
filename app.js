@@ -99,7 +99,7 @@ function buildPriceRowHtml(r) {
   var html = '<tr class="price-row" data-id="' + r.id + '">';
   html += '<td class="col-name">';
   html += '<div class="name-cell">';
-  html += '<span class="initials">' + initial + '</span>';
+  html += '<span class="initials">' + esc(initial) + '</span>';
   html += '<input type="text" data-field="name" placeholder="Provider name" value="' + esc(r.name) + '" />';
   html += '</div></td>';
   html += '<td class="col-num" data-label="Input /M"><div class="px"><span class="dollar">$</span><input type="number" data-field="input" min="0" step="any" value="' + r.input + '" /></div></td>';
@@ -120,7 +120,7 @@ function renderPriceRows() {
 }
 
 function esc(s) {
-  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#x27;");
 }
 
 /* ── sync state from DOM ──────────────────────────────────────────── */
