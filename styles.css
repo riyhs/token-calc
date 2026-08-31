@@ -725,13 +725,15 @@ tr.best .badge {
   }
 
   .card-actions {
+    display: flex;
     width: 100%;
-    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: stretch;
     gap: 0.5rem;
   }
 
   .card-actions .btn {
-    flex: 1 1 auto;
+    width: 100%;
     justify-content: center;
   }
 
