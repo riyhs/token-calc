@@ -753,8 +753,16 @@ tr.best .badge {
     justify-content: center;
   }
 
-  .px input {
-    width: 4.25rem;
+  /* wider price inputs: stretch to fill the card row after the label */
+  .price-row td .px {
+    flex: 1;
+    min-width: 0;
+    margin-left: 0;
+  }
+
+  .price-row td .px input {
+    flex: 1;
+    min-width: 0;
   }
 
   .name-cell {
@@ -948,10 +956,6 @@ tr.best .badge {
 @media (max-width: 400px) {
   .assumptions {
     grid-template-columns: 1fr;
-  }
-
-  .px input {
-    width: 4rem;
   }
 }
 
