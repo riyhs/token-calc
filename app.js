@@ -94,23 +94,27 @@ function parsePrice(s) {
 
 /* ── render pricing table rows ───────────────────────────────────── */
 
+function buildPriceRowHtml(r) {
+  var initial = (r.name || "?").charAt(0);
+  var html = '<tr class="price-row" data-id="' + r.id + '">';
+  html += '<td class="col-name">';
+  html += '<div class="name-cell">';
+  html += '<span class="initials">' + initial + '</span>';
+  html += '<input type="text" data-field="name" placeholder="Provider name" value="' + esc(r.name) + '" />';
+  html += '</div></td>';
+  html += '<td class="col-num" data-label="Input /M"><div class="px"><span class="dollar">$</span><input type="number" data-field="input" min="0" step="any" value="' + r.input + '" /></div></td>';
+  html += '<td class="col-num" data-label="Output /M"><div class="px"><span class="dollar">$</span><input type="number" data-field="output" min="0" step="any" value="' + r.output + '" /></div></td>';
+  html += '<td class="col-num" data-label="Cache read /M"><div class="px"><span class="dollar">$</span><input type="number" data-field="cacheRead" min="0" step="any" value="' + r.cacheRead + '" /></div></td>';
+  html += '<td class="col-num" data-label="Cache write /M"><div class="px"><span class="dollar">$</span><input type="number" data-field="cacheWrite" min="0" step="any" value="' + r.cacheWrite + '" /></div></td>';
+  html += '<td class="col-actions"><button type="button" class="remove-btn" data-action="remove-row" data-id="' + r.id + '" title="Remove provider" aria-label="Remove ' + esc(r.name || "provider") + '"><span class="remove-icon">✕</span><span class="remove-label">Remove provider</span></button></td>';
+  html += '</tr>';
+  return html;
+}
+
 function renderPriceRows() {
   var html = "";
   for (var i = 0; i < rows.length; i++) {
-    var r = rows[i];
-    var initial = (r.name || "?").charAt(0);
-    html += '<tr class="price-row" data-id="' + r.id + '">';
-    html += '<td class="col-name">';
-    html += '<div class="name-cell">';
-    html += '<span class="initials">' + initial + '</span>';
-    html += '<input type="text" data-field="name" placeholder="Provider name" value="' + esc(r.name) + '" />';
-    html += '</div></td>';
-    html += '<td class="col-num" data-label="Input /M"><div class="px"><span class="dollar">$</span><input type="number" data-field="input" min="0" step="any" value="' + r.input + '" /></div></td>';
-    html += '<td class="col-num" data-label="Output /M"><div class="px"><span class="dollar">$</span><input type="number" data-field="output" min="0" step="any" value="' + r.output + '" /></div></td>';
-    html += '<td class="col-num" data-label="Cache read /M"><div class="px"><span class="dollar">$</span><input type="number" data-field="cacheRead" min="0" step="any" value="' + r.cacheRead + '" /></div></td>';
-    html += '<td class="col-num" data-label="Cache write /M"><div class="px"><span class="dollar">$</span><input type="number" data-field="cacheWrite" min="0" step="any" value="' + r.cacheWrite + '" /></div></td>';
-    html += '<td class="col-actions"><button type="button" class="remove-btn" data-action="remove-row" data-id="' + r.id + '" title="Remove provider" aria-label="Remove ' + esc(r.name || "provider") + '"><span class="remove-icon">✕</span><span class="remove-label">Remove provider</span></button></td>';
-    html += '</tr>';
+    html += buildPriceRowHtml(rows[i]);
   }
   priceBody.innerHTML = html;
 }
@@ -211,25 +215,39 @@ function renderResults(results, bud) {
 /* ── actions ──────────────────────────────────────────────────────── */
 
 function addRow() {
-  rows.push({ id: freshId(), name: "", input: 0, output: 0, cacheRead: 0, cacheWrite: 0 });
-  renderPriceRows();
-  /* focus the name input of the newly added row */
-  var lastTr = priceBody.lastElementChild;
-  if (lastTr) {
-    var nameInput = lastTr.querySelector('[data-field="name"]');
-    if (nameInput) nameInput.focus();
-  }
+  var fresh = { id: freshId(), name: "", input: 0, output: 0, cacheRead: 0, cacheWrite: 0 };
+  rows.push(fresh);
+  /* build the new row element */
+  var wrap = document.createElement("tbody");
+  wrap.innerHTML = buildPriceRowHtml(fresh);
+  var tr = wrap.firstElementChild;
+  tr.classList.add("entering");
+  priceBody.appendChild(tr);
+  /* trigger reflow then animate in */
+  var _ = tr.offsetHeight; // eslint-disable-line
+  tr.classList.remove("entering");
+  /* focus the name input */
+  var nameInput = tr.querySelector('[data-field="name"]');
+  if (nameInput) nameInput.focus();
   recalc();
 }
 
 function removeRow(id) {
-  var kept = [];
-  for (var i = 0; i < rows.length; i++) {
-    if (rows[i].id !== id) kept.push(rows[i]);
-  }
-  rows = kept;
-  renderPriceRows();
-  recalc();
+  var tr = priceBody.querySelector('tr[data-id="' + id + '"]');
+  if (!tr) return;
+  tr.classList.add("leaving");
+  var onEnd = function () {
+    tr.removeEventListener("animationend", onEnd);
+    /* remove from state */
+    var kept = [];
+    for (var i = 0; i < rows.length; i++) {
+      if (rows[i].id !== id) kept.push(rows[i]);
+    }
+    rows = kept;
+    if (tr.parentNode) tr.parentNode.removeChild(tr);
+    recalc();
+  };
+  tr.addEventListener("animationend", onEnd);
 }
 
 /* ── CSV import ────────────────────────────────────────────────────── */

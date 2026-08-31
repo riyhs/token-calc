@@ -435,6 +435,27 @@ td.col-rank {
   background-color: rgb(var(--red) / 0.1);
 }
 
+/* ── add/remove row animation ── */
+.price-row {
+  transition: opacity 200ms cubic-bezier(0.23, 1, 0.32, 1),
+              transform 200ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.price-row.entering {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+@keyframes price-row-leave {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(-8px); }
+}
+
+.price-row.leaving {
+  animation: price-row-leave 200ms cubic-bezier(0.23, 1, 0.32, 1) forwards;
+  pointer-events: none;
+}
+
 .dialog-close {
   position: relative;
 }
