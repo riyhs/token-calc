@@ -540,13 +540,15 @@ tr.best .badge {
   justify-content: center;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 200ms ease;
+  visibility: hidden;
+  transition: opacity 200ms ease, visibility 200ms;
   padding: 1rem;
 }
 
 .dialog-overlay.open {
   opacity: 1;
   pointer-events: auto;
+  visibility: visible;
 }
 
 .dialog {

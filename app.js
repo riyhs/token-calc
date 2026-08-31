@@ -235,6 +235,16 @@ function removeRow(id) {
 /* ── CSV import ────────────────────────────────────────────────────── */
 
 var lastFocusedEl = null;
+var bgElements = [];
+
+function setBackgroundInert(inert) {
+  var els = document.querySelectorAll("header, main, footer");
+  bgElements = [];
+  for (var i = 0; i < els.length; i++) {
+    els[i].inert = inert;
+    bgElements.push(els[i]);
+  }
+}
 
 function openCsvDialog() {
   lastFocusedEl = document.activeElement;
@@ -246,6 +256,8 @@ function openCsvDialog() {
   csvDialog.classList.add("open");
   /* lock body scroll while dialog is open */
   document.body.style.overflow = "hidden";
+  /* background content unreachable by keyboard or screen reader */
+  setBackgroundInert(true);
   /* move focus into the dialog */
   csvText.focus();
 }
@@ -253,6 +265,7 @@ function openCsvDialog() {
 function closeCsvDialog() {
   csvDialog.classList.remove("open");
   document.body.style.overflow = "";
+  setBackgroundInert(false);
   /* restore focus to the trigger */
   if (lastFocusedEl && lastFocusedEl.focus) lastFocusedEl.focus();
 }
