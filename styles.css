@@ -707,6 +707,22 @@ tr.best .badge {
   padding-top: 0.875rem;
 }
 
+.app-footer p + p {
+  border-top: 0;
+  padding-top: 0.5rem;
+  font-size: 0.8125rem;
+}
+
+.app-footer .copyright a {
+  color: rgb(var(--muted-foreground));
+  text-decoration: none;
+}
+
+.app-footer .copyright a:hover {
+  color: rgb(var(--foreground));
+  text-decoration: underline;
+}
+
 /* ---------- responsive ---------- */
 @media (max-width: 720px) {
   .page {
@@ -910,6 +926,14 @@ tr.best .badge {
     content: none;
   }
 
+  .dialog-upload {
+    justify-content: flex-end;
+  }
+
+  .field.big {
+    max-width: 100%;
+  }
+
   .dialog-actions .btn {
     flex: 1 1 auto;
   }
@@ -924,10 +948,6 @@ tr.best .badge {
 @media (max-width: 400px) {
   .assumptions {
     grid-template-columns: 1fr;
-  }
-
-  .field.big {
-    max-width: 100%;
   }
 
   .px input {
