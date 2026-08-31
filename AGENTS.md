@@ -72,10 +72,11 @@ There are no test, lint, or build commands.
 - Number inputs use `Math.max(0, parseInt(...) || 0)` to reject negatives and NaN.
 - No try/catch — the computation is purely arithmetic and DOM querying; no external calls.
 
-### Event Wiring
-- **Event delegation** is the pattern: one `input` listener on `#price-body` (not one per cell), one `click` listener on `document` for `[data-action]` buttons.
-- Usage assumption inputs (`#in-tok`, `#out-tok`, etc.) get individual listeners since they're outside the delegation scope.
-- The `remove-btn` delegates up through `priceBody` by checking `data-action="remove-row"` + `data-id`.
+### Responsive Layout
+- **≥720px:** standard tables (both pricing and results), horizontal scroll inside `.table-wrap` if needed.
+- **≤720px (phones):** `thead` hidden, each `tr` becomes a stacked card (`display: block`, border, radius); each `td` renders as a labeled row via `td[data-label]::before { content: attr(data-label) }`. Labels are set as `data-label` attributes in `app.js` render functions. No horizontal scrolling on phones — rows are full-width cards.
+- The first cell of each row (provider name / rank) spans full width without a label; the remove button row is right-aligned with no label.
+- Breakpoints: 720px (table→card) and 400px (single-column assumption grid).
 
 ### State Management
 - Global `rows[]` array holds all pricing rows as `{ id, name, input, output, cacheRead, cacheWrite }`.

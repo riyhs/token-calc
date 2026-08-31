@@ -105,10 +105,10 @@ function renderPriceRows() {
     html += '<span class="initials">' + initial + '</span>';
     html += '<input type="text" data-field="name" placeholder="Provider name" value="' + esc(r.name) + '" />';
     html += '</div></td>';
-    html += '<td class="col-num"><div class="px"><span class="dollar">$</span><input type="number" data-field="input" min="0" step="any" value="' + r.input + '" /></div></td>';
-    html += '<td class="col-num"><div class="px"><span class="dollar">$</span><input type="number" data-field="output" min="0" step="any" value="' + r.output + '" /></div></td>';
-    html += '<td class="col-num"><div class="px"><span class="dollar">$</span><input type="number" data-field="cacheRead" min="0" step="any" value="' + r.cacheRead + '" /></div></td>';
-    html += '<td class="col-num"><div class="px"><span class="dollar">$</span><input type="number" data-field="cacheWrite" min="0" step="any" value="' + r.cacheWrite + '" /></div></td>';
+    html += '<td class="col-num" data-label="Input /M"><div class="px"><span class="dollar">$</span><input type="number" data-field="input" min="0" step="any" value="' + r.input + '" /></div></td>';
+    html += '<td class="col-num" data-label="Output /M"><div class="px"><span class="dollar">$</span><input type="number" data-field="output" min="0" step="any" value="' + r.output + '" /></div></td>';
+    html += '<td class="col-num" data-label="Cache read /M"><div class="px"><span class="dollar">$</span><input type="number" data-field="cacheRead" min="0" step="any" value="' + r.cacheRead + '" /></div></td>';
+    html += '<td class="col-num" data-label="Cache write /M"><div class="px"><span class="dollar">$</span><input type="number" data-field="cacheWrite" min="0" step="any" value="' + r.cacheWrite + '" /></div></td>';
     html += '<td class="col-actions"><button type="button" class="remove-btn" data-action="remove-row" data-id="' + r.id + '" title="Remove provider" aria-label="Remove ' + esc(r.name || "provider") + '">✕</button></td>';
     html += '</tr>';
   }
@@ -188,19 +188,19 @@ function renderResults(results, bud) {
     html += '</td>';
 
     /* name */
-    html += '<td class="col-name">' + esc(r.name) + '</td>';
+    html += '<td class="col-name" data-label="Provider">' + esc(r.name) + '</td>';
 
     /* cost/req */
-    html += '<td class="col-num cost">' + fmtMoney(r.cost) + ' <span class="units">/ req</span></td>';
+    html += '<td class="col-num cost" data-label="Cost / request">' + fmtMoney(r.cost) + ' <span class="units">/ req</span></td>';
 
     /* requests */
-    html += '<td class="col-num">' + (r.requests > 0 ? fmtInt(r.requests) : "—") + '</td>';
+    html += '<td class="col-num" data-label="Requests">' + (r.requests > 0 ? fmtInt(r.requests) : "—") + '</td>';
 
     /* tokens */
-    html += '<td class="col-num">' + (r.tokens > 0 ? fmtInt(r.tokens) : "—") + '</td>';
+    html += '<td class="col-num" data-label="Tokens">' + (r.tokens > 0 ? fmtInt(r.tokens) : "—") + '</td>';
 
     /* cost/1K out */
-    html += '<td class="col-num">' + (r.output > 0 ? fmtPrice(r.output / 1000) : "—") + '</td>';
+    html += '<td class="col-num" data-label="Cost / 1K out">' + (r.output > 0 ? fmtPrice(r.output / 1000) : "—") + '</td>';
 
     html += '</tr>';
   }
