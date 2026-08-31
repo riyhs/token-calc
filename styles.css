@@ -1,0 +1,696 @@
+/* ===================================================================
+ * Token Cost Calculator — styling mirroring riyaldi.dev
+ * Design tokens imported from personal-website/src/styles.css
+ * Font: Plus Jakarta Sans (system fallback stack)
+ * Semantic color tokens: RGB tuples for foreground/background/card/etc.
+ * =================================================================== */
+
+/* ---------- imports ---------- */
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap");
+
+/* ---------- design tokens ---------- */
+:root {
+  color-scheme: dark;
+  font-size: 16px;
+
+  --font-sans: "Plus Jakarta Sans", "Inter", "Segoe UI", system-ui, -apple-system,
+    BlinkMacSystemFont, sans-serif;
+  --font-mono: "SF Mono", "JetBrains Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
+
+  /* type scale */
+  --text-sm: 0.875rem;
+  --text-md: 1rem;
+  --text-lg: 1.618rem;
+  --text-xl: 2.618rem;
+
+  /* radii */
+  --radius-xs: 0.25rem;
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+
+  /* shadows */
+  --shadow-soft: 0 25px 80px 0 rgb(0 0 0 / 0.25);
+
+  /* semantic colors (RGB tuples: use with rgb(var(--X) / opacity) */
+  --background: 15 12 18;
+  --foreground: 250 250 250;
+  --card: 15 15 18;
+  --card-foreground: 244 244 245;
+  --border: 39 39 42;
+  --input: 63 63 70;
+  --muted: 24 24 27;
+  --muted-foreground: 161 161 170;
+  --accent: 63 63 70;
+  --accent-foreground: 250 250 250;
+  --ring: 250 250 250;
+  --green: 62 207 142;
+  --red: 248 113 113;
+
+  --glow-soft: radial-gradient(circle at 30% 20%, rgba(250, 250, 250, 0.14), transparent 55%),
+    radial-gradient(circle at 80% 0%, rgba(161, 161, 170, 0.18), transparent 45%);
+}
+
+/* ---------- reset & base ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border-color: rgb(var(--border) / 1);
+}
+
+*:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgb(var(--ring) / 0.85), 0 0 0 4px rgb(var(--background) / 1);
+}
+
+html {
+  color-scheme: dark;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  min-height: 100svh;
+  font-family: var(--font-sans);
+  background-color: rgb(var(--background));
+  background-image: var(--glow-soft);
+  background-attachment: fixed;
+  color: rgb(var(--foreground));
+  font-size: var(--text-md);
+  line-height: 1.65;
+  display: flex;
+  flex-direction: column;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: rgb(var(--foreground));
+}
+
+h1 {
+  font-size: var(--text-xl);
+  line-height: 1.1;
+}
+
+h2 {
+  font-size: var(--text-lg);
+  line-height: 1.15;
+}
+
+/* ---------- layout ---------- */
+.page {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem 4rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.125rem;
+}
+
+/* ---------- header ---------- */
+.app-header {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem 0;
+  width: 100%;
+}
+
+.app-header h1 {
+  text-wrap: balance;
+}
+
+.app-header .tagline {
+  color: rgb(var(--muted-foreground));
+  font-size: var(--text-sm);
+  margin-top: 0.25rem;
+}
+
+/* ---------- cards (glass-panel + glow-card) ---------- */
+.card {
+  background-color: rgb(var(--background) / 0.55);
+  /* border: 1px solid rgb(var(--border) / 0.6); */
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(8px);
+  border-radius: var(--radius-xl);
+  padding: 1.5rem;
+  position: relative;
+  isolation: isolate;
+}
+
+.card::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  z-index: -1;
+  background: radial-gradient(circle, rgba(14, 106, 253, 0.15), rgba(14, 106, 253, 0.05) 100%, transparent 100%);
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+
+.card:hover::after {
+  opacity: 1;
+}
+
+.card-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.card-head h2 {
+  font-size: var(--text-md);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.card-head .hint {
+  color: rgb(var(--muted-foreground));
+  font-size: var(--text-sm);
+}
+
+.card-head .unit {
+  color: rgb(var(--muted-foreground));
+  font-size: var(--text-sm);
+  font-weight: 500;
+  margin-left: 0.25rem;
+}
+
+/* ---------- buttons ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  border: 0;
+  cursor: pointer;
+  border-radius: 9999px;
+  padding: 0.5rem 1rem;
+  font-size: var(--text-sm);
+  transition: colors 150ms ease, transform 150ms ease, box-shadow 150ms ease;
+  white-space: nowrap;
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn-default {
+  background-color: rgb(var(--foreground));
+  color: rgb(var(--background));
+  box-shadow: 0 4px 24px rgb(0 0 0 / 0.25);
+}
+
+.btn-default:hover {
+  background-color: rgb(var(--foreground) / 0.9);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: rgb(var(--foreground));
+  border: 1px solid rgb(var(--border));
+}
+
+.btn-ghost:hover {
+  background-color: rgb(var(--foreground) / 0.05);
+}
+
+.btn-ghost-accent {
+  background: transparent;
+  color: rgb(var(--foreground));
+  border: 1px solid rgb(var(--border));
+}
+
+.btn-ghost-accent:hover {
+  border-color: rgb(var(--ring));
+  background-color: rgb(var(--foreground) / 0.05);
+}
+
+/* ---------- inputs ---------- */
+input[type="number"],
+input[type="text"] {
+  background-color: rgb(var(--muted));
+  border: 1px solid rgb(var(--input));
+  border-radius: var(--radius-md);
+  color: rgb(var(--foreground));
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  padding: 0.5rem 0.625rem;
+  text-align: right;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+  width: 100%;
+}
+
+input[type="text"] {
+  text-align: left;
+  font-family: var(--font-sans);
+}
+
+input:focus {
+  outline: none;
+  border-color: rgb(var(--ring));
+  box-shadow: 0 0 0 2px rgb(var(--ring) / 0.22);
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+/* ---------- pricing table ---------- */
+.table-wrap {
+  overflow-x: auto;
+  border-radius: var(--radius-md);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+}
+
+thead th {
+  text-align: right;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: rgb(var(--muted-foreground));
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.5rem 0.625rem;
+  border-bottom: 1px solid rgb(var(--border) / 0.7);
+  white-space: nowrap;
+}
+
+thead th.col-name,
+thead th.col-rank {
+  text-align: left;
+}
+
+thead th .sub {
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 500;
+}
+
+tbody tr {
+  border-bottom: 1px solid rgb(var(--border) / 0.35);
+  transition: background-color 100ms ease;
+}
+
+tbody tr:last-child {
+  border-bottom: 0;
+}
+
+tbody tr:hover {
+  background-color: rgb(var(--foreground) / 0.03);
+}
+
+td {
+  padding: 0.5rem 0.625rem;
+  vertical-align: middle;
+}
+
+td.col-name {
+  font-weight: 600;
+  text-align: left;
+  white-space: nowrap;
+}
+
+td.col-num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+td.col-rank {
+  text-align: left;
+  color: rgb(var(--muted-foreground));
+  font-weight: 600;
+}
+
+/* editable pricing rows */
+.price-row td {
+  padding: 0.375rem 0.5rem;
+}
+
+.name-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 12rem;
+}
+
+.name-cell input {
+  min-width: 10rem;
+}
+
+.initials {
+  flex: 0 0 auto;
+  width: 1.625rem;
+  height: 1.625rem;
+  border-radius: var(--radius-sm);
+  background-color: rgb(var(--muted));
+  color: rgb(var(--foreground) / 0.7);
+  font-weight: 700;
+  font-size: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+}
+
+.px {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.25rem;
+}
+
+.px .dollar {
+  color: rgb(var(--muted-foreground));
+  font-weight: 600;
+}
+
+.px input {
+  width: 5.5rem;
+}
+
+.remove-btn {
+  background: transparent;
+  border: 0;
+  color: rgb(var(--muted-foreground));
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0.25rem 0.375rem;
+  border-radius: var(--radius-xs);
+  transition: color 150ms ease, background-color 150ms ease;
+}
+
+.remove-btn:hover {
+  color: rgb(var(--red));
+  background-color: rgb(var(--red) / 0.1);
+}
+
+.empty-row td {
+  color: rgb(var(--muted-foreground));
+  text-align: center;
+  font-style: italic;
+  padding: 1.5rem 0.625rem;
+}
+
+/* ---------- assumption fields ---------- */
+.assumptions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: 0.875rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.field-label {
+  font-size: var(--text-sm);
+  color: rgb(var(--muted-foreground));
+  font-weight: 550;
+}
+
+.field input {
+  width: 100%;
+}
+
+.field.big {
+  max-width: 14rem;
+}
+
+/* money input */
+.money {
+  display: flex;
+  align-items: stretch;
+}
+
+.money .currency {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 0.75rem;
+  background-color: rgb(var(--muted));
+  border: 1px solid rgb(var(--input));
+  border-right: 0;
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
+  color: rgb(var(--muted-foreground));
+  font-weight: 600;
+}
+
+.money input {
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+
+/* ---------- results ---------- */
+td.cost {
+  font-weight: 700;
+}
+
+td.cost .units {
+  font-weight: 500;
+  color: rgb(var(--muted-foreground));
+  font-size: 0.71875rem;
+}
+
+tr.best {
+  background-color: rgb(var(--green) / 0.06);
+}
+
+tr.best td.col-rank {
+  color: rgb(var(--green));
+}
+
+tr.best .badge {
+  display: inline-block;
+  background-color: rgb(var(--green) / 0.15);
+  color: rgb(var(--green));
+  border-radius: 9999px;
+  padding: 0.0625rem 0.375rem;
+  font-size: 0.625rem;
+  font-weight: 700;
+  margin-left: 0.375rem;
+  vertical-align: 0.0625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* ---------- dialog (CSV import) ---------- */
+.dialog-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background-color: rgb(0 0 0 / 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 200ms ease;
+  padding: 1rem;
+}
+
+.dialog-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.dialog {
+  background-color: rgb(var(--card));
+  border: 1px solid rgb(var(--border));
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-soft);
+  max-width: 36rem;
+  width: 100%;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.dialog-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.dialog-head h2 {
+  font-size: var(--text-md);
+  font-weight: 600;
+}
+
+.dialog-close {
+  background: transparent;
+  border: 0;
+  color: rgb(var(--muted-foreground));
+  font-size: 1.125rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: var(--radius-xs);
+  transition: color 150ms ease;
+}
+
+.dialog-close:hover {
+  color: rgb(var(--foreground));
+}
+
+.dialog-hint {
+  color: rgb(var(--muted-foreground));
+  font-size: var(--text-sm);
+  line-height: 1.5;
+}
+
+.dialog-hint code {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  background-color: rgb(var(--muted));
+  padding: 0.0625rem 0.3125rem;
+  border-radius: var(--radius-xs);
+  color: rgb(var(--foreground));
+}
+
+.dialog-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+#csv-text {
+  background-color: rgb(var(--muted));
+  border: 1px solid rgb(var(--input));
+  border-radius: var(--radius-md);
+  color: rgb(var(--foreground));
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  padding: 0.625rem;
+  width: 100%;
+  resize: vertical;
+  line-height: 1.5;
+  transition: border-color 150ms ease;
+}
+
+#csv-text:focus {
+  outline: none;
+  border-color: rgb(var(--ring));
+  box-shadow: 0 0 0 2px rgb(var(--ring) / 0.22);
+}
+
+.dialog-upload {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.upload-label {
+  cursor: pointer;
+  display: inline-flex;
+}
+
+.upload-label input[type="file"] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.upload-name {
+  color: rgb(var(--muted-foreground));
+  font-size: var(--text-sm);
+  font-family: var(--font-mono);
+}
+
+.dialog-errors {
+  color: rgb(var(--red));
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  min-height: 0;
+}
+
+.dialog-errors.error {
+  padding: 0.5rem 0.625rem;
+  border: 1px solid rgb(var(--red) / 0.3);
+  border-radius: var(--radius-md);
+  background-color: rgb(var(--red) / 0.06);
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding-top: 0.25rem;
+}
+
+/* ---------- footer ---------- */
+.app-footer {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 0 1.25rem 2rem;
+  width: 100%;
+}
+
+.app-footer p {
+  color: rgb(var(--muted-foreground));
+  font-size: var(--text-sm);
+  border-top: 1px solid rgb(var(--border) / 0.5);
+  padding-top: 0.875rem;
+}
+
+/* ---------- responsive ---------- */
+@media (max-width: 720px) {
+  .page {
+    padding: 1.5rem 1rem 2.5rem;
+    gap: 0.875rem;
+  }
+
+  .card {
+    padding: 1rem;
+  }
+
+  .card-head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .card-actions {
+    width: 100%;
+  }
+
+  .px input {
+    width: 4.5rem;
+  }
+
+  .name-cell input {
+    min-width: 7rem;
+  }
+}

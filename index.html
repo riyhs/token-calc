@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Token Cost Calculator — Compare LLM pricing per token</title>
+  <meta name="description" content="Paste provider pricing per 1M tokens and instantly compare cost per request, requests per dollar, and token value across AI models." />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <h1>Token Cost Calculator</h1>
+    <p class="tagline">Compare LLM providers by price per token — cost per request, requests per dollar, tokens per dollar.</p>
+  </header>
+
+  <main class="page" id="app">
+    <!-- ── Pricing table ── -->
+    <section class="card" aria-labelledby="pricing-title">
+      <div class="card-head">
+        <h2 id="pricing-title">Provider pricing <span class="unit">USD per 1M tokens</span></h2>
+        <div class="card-actions">
+          <button type="button" class="btn btn-ghost" data-action="import-csv">Import CSV</button>
+          <button type="button" class="btn btn-default" data-action="add-row">Add provider</button>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table id="price-table">
+          <thead>
+            <tr>
+              <th class="col-name">Provider</th>
+              <th class="col-num">Input <span class="sub">/1M</span></th>
+              <th class="col-num">Output <span class="sub">/1M</span></th>
+              <th class="col-num">Cache read <span class="sub">/1M</span></th>
+              <th class="col-num">Cache write <span class="sub">/1M</span></th>
+              <th class="col-actions"></th>
+            </tr>
+          </thead>
+          <tbody id="price-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ── Usage assumptions ── -->
+    <section class="card" aria-labelledby="usage-title">
+      <div class="card-head">
+        <h2 id="usage-title">Usage assumptions <span class="unit">per request</span></h2>
+      </div>
+
+      <div class="assumptions">
+        <label class="field">
+          <span class="field-label">Input tokens</span>
+          <input type="number" id="in-tok" value="1200" min="0" step="1" />
+        </label>
+        <label class="field">
+          <span class="field-label">Output tokens</span>
+          <input type="number" id="out-tok" value="400" min="0" step="1" />
+        </label>
+        <label class="field">
+          <span class="field-label">Cache read tokens</span>
+          <input type="number" id="cr-tok" value="80000" min="0" step="1000" />
+        </label>
+        <label class="field">
+          <span class="field-label">Cache write tokens</span>
+          <input type="number" id="cw-tok" value="0" min="0" step="100" />
+        </label>
+      </div>
+    </section>
+
+    <!-- ── Budget ── -->
+    <section class="card" aria-labelledby="budget-title">
+      <div class="card-head">
+        <h2 id="budget-title">Budget <span class="unit">USD</span></h2>
+      </div>
+      <div class="assumptions">
+        <label class="field big">
+          <span class="field-label">Budget</span>
+          <div class="money">
+            <span class="currency">$</span>
+            <input type="number" id="budget" value="10" min="0" step="0.5" />
+          </div>
+        </label>
+      </div>
+    </section>
+
+    <!-- ── Results ── -->
+    <section class="card" aria-labelledby="results-title">
+      <div class="card-head">
+        <h2 id="results-title">Comparison</h2>
+      </div>
+
+      <div class="table-wrap">
+        <table id="result-table">
+          <thead>
+            <tr>
+              <th class="col-rank">#</th>
+              <th class="col-name">Provider</th>
+              <th class="col-num">Cost / request</th>
+              <th class="col-num">Requests / $<span class="sub">budget</span></th>
+              <th class="col-num">Tokens / $<span class="sub">budget</span></th>
+              <th class="col-num">Cost / 1K out</th>
+            </tr>
+          </thead>
+          <tbody id="result-body"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <p>Estimates only — prices change. Cache read tokens dominate real cost: a 50K re-read dwarfs a few hundred fresh tokens.</p>
+  </footer>
+
+  <!-- ── CSV import dialog ── -->
+  <div class="dialog-overlay" id="csv-dialog" role="dialog" aria-modal="true" aria-labelledby="csv-title">
+    <div class="dialog">
+      <div class="dialog-head">
+        <h2 id="csv-title">Import providers from CSV</h2>
+        <button type="button" class="dialog-close" data-action="close-dialog" aria-label="Close">✕</button>
+      </div>
+      <p class="dialog-hint">Paste CSV text or upload a file. Format: <code>Name, Input /M, Output /M, Cache read /M, Cache write /M</code> (cache write optional).</p>
+      <div class="dialog-body">
+        <textarea id="csv-text" rows="8" placeholder="OpenInference, 0.03, 0.16, 0.013, 0&#10;Sail Research, 0.065, 0.18, 0.02, 0"></textarea>
+        <div class="dialog-upload">
+          <label class="btn btn-ghost upload-label">
+            <input type="file" id="csv-file" accept=".csv,.txt,text/csv,text/plain" />
+            Upload .csv file
+          </label>
+          <span class="upload-name" id="upload-name"></span>
+        </div>
+        <div class="dialog-errors" id="csv-errors" role="alert"></div>
+      </div>
+      <div class="dialog-actions">
+        <button type="button" class="btn btn-ghost" data-action="close-dialog">Cancel</button>
+        <button type="button" class="btn btn-default" id="csv-apply">Apply</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
