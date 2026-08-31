@@ -754,7 +754,7 @@ tr.best .badge {
   }
 
   .px input {
-    width: 4.25rem;
+    width: 5.5rem;
   }
 
   .name-cell {
@@ -948,10 +948,6 @@ tr.best .badge {
 @media (max-width: 400px) {
   .assumptions {
     grid-template-columns: 1fr;
-  }
-
-  .px input {
-    width: 4rem;
   }
 }
 
