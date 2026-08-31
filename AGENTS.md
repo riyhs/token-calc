@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-**Token Cost Calculator** — a single-page HTML/JS/CSS tool for comparing LLM provider pricing. Users paste provider prices (USD per 1M tokens) into a table, set their typical token usage per request (input, output, cache read, cache write), enter a budget, and instantly see cost per request, requests per dollar, and tokens per dollar across all providers, sorted cheapest-first.
+**TokenCalc** — a single-page HTML/JS/CSS tool for comparing LLM provider pricing. Users paste provider prices (USD per 1M tokens) into a table, set their typical token usage per request (input, output, cache read, cache write), enter a budget, and instantly see cost per request, requests per dollar, and tokens per dollar across all providers, sorted cheapest-first.
 
 ## Architecture & Data Flow
 
