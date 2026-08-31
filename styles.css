@@ -63,8 +63,12 @@
 }
 
 *:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 2px rgb(var(--ring) / 0.85), 0 0 0 4px rgb(var(--background) / 1);
+  outline: 2px solid rgb(var(--ring) / 0.85);
+  outline-offset: 2px;
+}
+
+.btn-default:focus-visible {
+  outline-color: rgb(var(--background) / 0.9);
 }
 
 html {
@@ -200,12 +204,13 @@ h2 {
   border-radius: 9999px;
   padding: 0.5rem 1rem;
   font-size: var(--text-sm);
-  transition: colors 150ms ease, transform 150ms ease, box-shadow 150ms ease;
+  transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease,
+    transform 150ms ease, box-shadow 150ms ease;
   white-space: nowrap;
 }
 
 .btn:active {
-  transform: scale(0.97);
+  transform: scale(0.96);
 }
 
 .btn-default {
@@ -228,17 +233,6 @@ h2 {
   background-color: rgb(var(--foreground) / 0.05);
 }
 
-.btn-ghost-accent {
-  background: transparent;
-  color: rgb(var(--foreground));
-  border: 1px solid rgb(var(--border));
-}
-
-.btn-ghost-accent:hover {
-  border-color: rgb(var(--ring));
-  background-color: rgb(var(--foreground) / 0.05);
-}
-
 /* ---------- inputs ---------- */
 input[type="number"],
 input[type="text"] {
@@ -254,12 +248,21 @@ input[type="text"] {
   width: 100%;
 }
 
+/* iOS Safari zooms the page when input text is below 16px */
+@media (max-width: 720px) {
+  input[type="number"],
+  input[type="text"],
+  #csv-text {
+    font-size: 16px;
+  }
+}
+
 input[type="text"] {
   text-align: left;
   font-family: var(--font-sans);
 }
 
-input:focus {
+input:focus-visible {
   outline: none;
   border-color: rgb(var(--ring));
   box-shadow: 0 0 0 2px rgb(var(--ring) / 0.22);
@@ -395,6 +398,7 @@ td.col-rank {
 }
 
 .remove-btn {
+  position: relative;
   background: transparent;
   border: 0;
   color: rgb(var(--muted-foreground));
@@ -406,16 +410,40 @@ td.col-rank {
   transition: color 150ms ease, background-color 150ms ease;
 }
 
+/* expand hit area to ≥40px without enlarging the glyph */
+.remove-btn::before {
+  content: "";
+  position: absolute;
+  inset: -0.625rem;
+  border-radius: inherit;
+}
+
 .remove-btn:hover {
   color: rgb(var(--red));
   background-color: rgb(var(--red) / 0.1);
 }
 
+.dialog-close {
+  position: relative;
+}
+
+.dialog-close::before {
+  content: "";
+  position: absolute;
+  inset: -0.625rem;
+  border-radius: inherit;
+}
+
 .empty-row td {
   color: rgb(var(--muted-foreground));
   text-align: center;
-  font-style: italic;
-  padding: 1.5rem 0.625rem;
+  padding: 1.75rem 0.625rem;
+  line-height: 1.5;
+}
+
+.empty-row td strong {
+  color: rgb(var(--foreground));
+  font-weight: 600;
 }
 
 /* ---------- assumption fields ---------- */
@@ -684,13 +712,67 @@ tr.best .badge {
 
   .card-actions {
     width: 100%;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .card-actions .btn {
+    flex: 1 1 auto;
+    justify-content: center;
   }
 
   .px input {
-    width: 4.5rem;
+    width: 4.25rem;
+  }
+
+  .name-cell {
+    min-width: 0;
   }
 
   .name-cell input {
-    min-width: 7rem;
+    min-width: 0;
+    width: 100%;
+  }
+
+  .dialog {
+    padding: 1rem;
+    max-height: 90svh;
+    overflow-y: auto;
+  }
+
+  .dialog-actions .btn {
+    flex: 1 1 auto;
+  }
+
+  .app-header,
+  .app-footer {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .assumptions {
+    grid-template-columns: 1fr;
+  }
+
+  .field.big {
+    max-width: 100%;
+  }
+
+  .px input {
+    width: 4rem;
+  }
+}
+
+/* ---------- reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

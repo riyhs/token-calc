@@ -113,7 +113,7 @@
               <th class="col-num">Cost / 1K out</th>
             </tr>
           </thead>
-          <tbody id="result-body"></tbody>
+          <tbody id="result-body" aria-live="polite"></tbody>
         </table>
       </div>
     </section>
@@ -132,7 +132,10 @@
       </div>
       <p class="dialog-hint">Paste CSV text or upload a file. Format: <code>Name, Input /M, Output /M, Cache read /M, Cache write /M</code> (cache write optional).</p>
       <div class="dialog-body">
-        <textarea id="csv-text" rows="8" placeholder="OpenInference, 0.03, 0.16, 0.013, 0&#10;Sail Research, 0.065, 0.18, 0.02, 0"></textarea>
+        <label class="field">
+          <span class="field-label">CSV data</span>
+          <textarea id="csv-text" rows="8" placeholder="OpenInference, 0.03, 0.16, 0.013, 0&#10;Sail Research, 0.065, 0.18, 0.02, 0"></textarea>
+        </label>
         <div class="dialog-upload">
           <label class="btn btn-ghost upload-label">
             <input type="file" id="csv-file" accept=".csv,.txt,text/csv,text/plain" />

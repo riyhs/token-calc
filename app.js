@@ -36,7 +36,6 @@ function freshId() {
 /* ── DOM refs ────────────────────────────────────────────────────── */
 
 const $ = (s) => document.querySelector(s);
-const $$ = (s) => document.querySelectorAll(s);
 
 const priceBody =   $("#price-body");
 const resultBody =  $("#result-body");
@@ -110,7 +109,7 @@ function renderPriceRows() {
     html += '<td class="col-num"><div class="px"><span class="dollar">$</span><input type="number" data-field="output" min="0" step="any" value="' + r.output + '" /></div></td>';
     html += '<td class="col-num"><div class="px"><span class="dollar">$</span><input type="number" data-field="cacheRead" min="0" step="any" value="' + r.cacheRead + '" /></div></td>';
     html += '<td class="col-num"><div class="px"><span class="dollar">$</span><input type="number" data-field="cacheWrite" min="0" step="any" value="' + r.cacheWrite + '" /></div></td>';
-    html += '<td class="col-actions"><button type="button" class="remove-btn" data-action="remove-row" data-id="' + r.id + '" title="Remove provider">✕</button></td>';
+    html += '<td class="col-actions"><button type="button" class="remove-btn" data-action="remove-row" data-id="' + r.id + '" title="Remove provider" aria-label="Remove ' + esc(r.name || "provider") + '">✕</button></td>';
     html += '</tr>';
   }
   priceBody.innerHTML = html;
@@ -172,7 +171,7 @@ function renderResults(results, bud) {
   var html = "";
 
   if (results.length === 0) {
-    html += '<tr class="empty-row"><td colspan="6">Add a provider above to see the comparison.</td></tr>';
+    html += '<tr class="empty-row"><td colspan="6"><strong>No providers yet</strong> — add one above or import a CSV to see the comparison.</td></tr>';
     resultBody.innerHTML = html;
     return;
   }
@@ -235,18 +234,51 @@ function removeRow(id) {
 
 /* ── CSV import ────────────────────────────────────────────────────── */
 
+var lastFocusedEl = null;
+
 function openCsvDialog() {
+  lastFocusedEl = document.activeElement;
   csvText.value = "";
   csvFile.value = "";
   uploadName.textContent = "";
   csvErrors.className = "dialog-errors";
   csvErrors.textContent = "";
   csvDialog.classList.add("open");
+  /* lock body scroll while dialog is open */
+  document.body.style.overflow = "hidden";
+  /* move focus into the dialog */
+  csvText.focus();
 }
 
 function closeCsvDialog() {
   csvDialog.classList.remove("open");
+  document.body.style.overflow = "";
+  /* restore focus to the trigger */
+  if (lastFocusedEl && lastFocusedEl.focus) lastFocusedEl.focus();
 }
+
+/* focus trap: Tab cycles within the dialog, Shift+Tab wraps */
+csvDialog.addEventListener("keydown", function (e) {
+  if (e.key === "Escape") {
+    e.preventDefault();
+    closeCsvDialog();
+    return;
+  }
+  if (e.key !== "Tab") return;
+  var focusables = csvDialog.querySelectorAll(
+    'button:not([disabled]), textarea:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])'
+  );
+  if (focusables.length === 0) return;
+  var first = focusables[0];
+  var last = focusables[focusables.length - 1];
+  if (e.shiftKey && document.activeElement === first) {
+    e.preventDefault();
+    last.focus();
+  } else if (!e.shiftKey && document.activeElement === last) {
+    e.preventDefault();
+    first.focus();
+  }
+});
 
 function parseCsvRow(raw, lineNum) {
   /* split on commas, trimming whitespace */
@@ -286,6 +318,7 @@ function applyCsv() {
   if (!raw) {
     csvErrors.className = "dialog-errors error";
     csvErrors.textContent = "Paste CSV data or upload a file.";
+    csvErrors.setAttribute("aria-live", "assertive");
     return;
   }
 
@@ -332,12 +365,14 @@ function applyCsv() {
   if (parsed.length === 0 && errs.length > 0) {
     csvErrors.className = "dialog-errors error";
     csvErrors.textContent = errs.join(" ");
+    csvErrors.setAttribute("aria-live", "assertive");
     return;
   }
 
   if (parsed.length === 0) {
     csvErrors.className = "dialog-errors error";
-    csvErrors.textContent = "No valid rows found in the CSV data.";
+    csvErrors.textContent = "No valid rows found in the CSV data. Check the format and try again.";
+    csvErrors.setAttribute("aria-live", "assertive");
     return;
   }
 
@@ -349,6 +384,7 @@ function applyCsv() {
   renderPriceRows();
   recalc();
   closeCsvDialog();
+  csvErrors.removeAttribute("aria-live");
 }
 
 /* ── event wiring ────────────────────────────────────────────────── */
