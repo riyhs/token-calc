@@ -423,6 +423,13 @@ function applyCsv() {
 /* Event delegation: one listener on the price table body */
 priceBody.addEventListener("input", recalc);
 
+/* Usage assumptions and budget also trigger recalculation */
+inTok.addEventListener("input", recalc);
+outTok.addEventListener("input", recalc);
+crTok.addEventListener("input", recalc);
+cwTok.addEventListener("input", recalc);
+budget.addEventListener("input", recalc);
+
 priceBody.addEventListener("click", function (e) {
   var target = e.target;
   while (target && target !== priceBody) {
